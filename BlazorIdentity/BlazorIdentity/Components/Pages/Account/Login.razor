@@ -7,11 +7,13 @@
 @using Microsoft.AspNetCore.WebUtilities
 @using BlazorIdentity.Data
 @using BlazorIdentity.Identity
+@using System.Net.Mail
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject ILogger<Login> Logger
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
+@inject UserManager<ApplicationUser> UserManager
 
 <PageTitle>Log in</PageTitle>
 
@@ -81,15 +83,15 @@
     public class InputModel
     {
         [Required]
-        [EmailAddress]
-        public string Email { get; set; } = null!;
+        [Display(Name = "Email / Username")]
+        public string Email { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
-        public string Password { get; set; } = null!;
+        public string Password { get; set; }
 
         [Display(Name = "Remember me?")]
-        public bool RememberMe { get; set; } = false;
+        public bool RememberMe { get; set; }
     }
 
     protected override async Task OnInitializedAsync()
@@ -106,6 +108,16 @@
 
     public async Task LoginUser()
     {
+        var userName = Input.Email;
+        if (IsValidEmail(Input.Email))
+        {
+            var user = await UserManager.FindByEmailAsync(Input.Email);
+            if (user != null)
+            {
+                userName = user.UserName;
+            }
+        }
+
         // This doesn't count login failures towards account lockout
         // To enable password failures to trigger account lockout, set lockoutOnFailure: true
         var result = await SignInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
@@ -128,6 +140,19 @@
         else
         {
             errorMessage = "Error: Invalid login attempt.";
+        }
+    }
+
+    public bool IsValidEmail(string emailaddress)
+    {
+        try
+        {
+            MailAddress m = new MailAddress(emailaddress);
+            return true;
+        }
+        catch (FormatException)
+        {
+            return false;
         }
     }
 }
