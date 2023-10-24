@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34212.112
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorIdentity", "BlazorIdentity\BlazorIdentity\BlazorIdentity.csproj", "{5DFDE487-8835-4D45-A7C5-B0CD6D40C7D5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorIdentity", "BlazorIdentity\BlazorIdentity\BlazorIdentity.csproj", "{5DFDE487-8835-4D45-A7C5-B0CD6D40C7D5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorIdentity.Client", "BlazorIdentity\BlazorIdentity.Client\BlazorIdentity.Client.csproj", "{E259DE55-B73F-4537-AD2A-7DA58E4EBBEA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorIdentity.Client", "BlazorIdentity\BlazorIdentity.Client\BlazorIdentity.Client.csproj", "{E259DE55-B73F-4537-AD2A-7DA58E4EBBEA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
