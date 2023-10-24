@@ -44,6 +44,20 @@
             <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
         </EditForm>
     </div>
+    <div class="col-md-6">
+        <div class="form-floating">
+            <label asp-for="Input.ProfilePicture" style="width: 100%;"></label>
+            @if (Input.ProfilePicture != null && Input.ProfilePicture.Length > 0)
+            {
+                <img id="profilePicture" style="width:350px;height:350px; object-fit:cover" src="data:image/*;base64,@(Convert.ToBase64String(Input.ProfilePicture))">
+            }
+            else
+            {
+                <InputFile OnChange="LoadFiles" />
+            }
+            <span asp-validation-for="Input.ProfilePicture" class="text-danger"></span>
+        </div>
+    </div>
 </div>
 
 @code {
@@ -52,6 +66,7 @@
     private string? _lastname;
     private string? _username;
     private string? _phoneNumber;
+    private byte[]? _profilePicture;
 
     [SupplyParameterFromForm]
     private InputModel Input { get; set; } = default!;
@@ -65,11 +80,24 @@
         _phoneNumber = await UserManager.GetPhoneNumberAsync(_user);
         _firstname = _user.FirstName;
         _lastname = _user.LastName;
+        _profilePicture = _user.ProfilePicture;
 
         Input.FirstName ??= _firstname;
         Input.LastName ??= _lastname;
         Input.PhoneNumber ??= _phoneNumber;
-        Input.ProfilePicture ??= _user.ProfilePicture;
+        Input.ProfilePicture ??= _profilePicture;
+    }
+
+    private async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        MemoryStream ms = new MemoryStream();
+        await e.File.OpenReadStream().CopyToAsync(ms);
+        var bytes = ms.ToArray();
+
+        _user.ProfilePicture = bytes;
+        await UserManager.UpdateAsync(_user);
+
+        Input.ProfilePicture = bytes;
     }
 
     private async Task OnValidSubmitAsync()
