@@ -10,3 +10,9 @@ This solution is a boilerplate for the implementation of common functionalities 
 - add a schema and change the name of the Identity tables
 - custom fields in the `ApplicationUser` (such as _FirstName_, _LastName_...)
 - display the first name of the user of the username if the name is empty
+
+You find the posts of this project on [PureSourceCode](https://puresourcecode.com):
+
+- [Custom User Management with NET8 and Blazor](https://puresourcecode.com/dotnet/blazor/custom-user-management-with-net8-and-blazor/)
+
+If you find this code useful, please consider making a donation on [GitHub](https://github.com/sponsors/erossini).
