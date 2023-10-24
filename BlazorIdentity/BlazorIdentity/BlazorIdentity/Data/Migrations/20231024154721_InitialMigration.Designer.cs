@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazorIdentity.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231024153749_Add custom properties")]
-    partial class Addcustomproperties
+    [Migration("20231024154721_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
