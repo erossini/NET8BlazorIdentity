@@ -36,6 +36,38 @@ builder.Services.AddSingleton<IEmailSender, NoOpEmailSender>();
 
 var app = builder.Build();
 
+#region Users Database
+
+// Create the database if it does not exist
+using (var scope = app.Services.CreateScope())
+{
+    var service = scope.ServiceProvider;
+    var context = service.GetService<ApplicationDbContext>();
+
+    context?.Database?.EnsureCreated();
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    try
+    {
+        var context = services.GetRequiredService<ApplicationDbContext>();
+        var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+        //await ContextSeed.SeedRolesAsync(userManager, roleManager);
+        //await ContextSeed.SeedSuperAdminAsync(userManager, roleManager);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine("An error occurred seeding the DB. " + ex.Message);
+    }
+}
+
+#endregion Users Database
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

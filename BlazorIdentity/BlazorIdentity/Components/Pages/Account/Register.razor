@@ -9,6 +9,7 @@
 @using Microsoft.AspNetCore.WebUtilities
 @using BlazorIdentity.Data
 @using BlazorIdentity.Identity
+@using System.Net.Mail
 
 @inject UserManager<ApplicationUser> UserManager
 @inject IUserStore<ApplicationUser> UserStore
@@ -30,6 +31,16 @@
             <h2>Create a new account.</h2>
             <hr />
             <ValidationSummary class="text-danger" />
+            <div class="form-floating mb-3">
+                <InputText id="firstname" @bind-Value="Input.FirstName" class="form-control" aria-required="true" />
+                <label for="firstname">First name</label>
+                <ValidationMessage For="() => Input.FirstName" class="text-danger" />
+            </div>
+            <div class="form-floating mb-3">
+                <InputText id="lastname" @bind-Value="Input.LastName" class="form-control" aria-required="true" />
+                <label for="lastname">First name</label>
+                <ValidationMessage For="() => Input.LastName" class="text-danger" />
+            </div>
             <div class="form-floating mb-3">
                 <InputText id="email" @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
                 <label for="email">Email</label>
@@ -101,6 +112,14 @@
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; } = null!;
+
+        [Required]
+        [Display(Name = "First Name")]
+        public string FirstName { get; set; } = null!;
+
+        [Required]
+        [Display(Name = "Last Name")]
+        public string LastName { get; set; } = null!;
     }
 
     IEnumerable<IdentityError>? identityErrors;
@@ -113,7 +132,16 @@
 
     public async Task RegisterUser(EditContext editContext)
     {
-        var user = CreateUser();
+        MailAddress address = new MailAddress(Input.Email);
+        string userName = address.User;
+
+        var user = new ApplicationUser()
+            {
+                UserName = userName,
+                Email = Input.Email,
+                FirstName = Input.FirstName,
+                LastName = Input.LastName
+            };
 
         await UserStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
         var emailStore = GetEmailStore();
