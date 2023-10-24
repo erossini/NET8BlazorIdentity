@@ -16,6 +16,7 @@ This solution is a boilerplate for the implementation of common functionalities 
 - add a schema and change the name of the Identity tables
 - custom fields in the `ApplicationUser` (such as _FirstName_, _LastName_...)
 - display the first name of the user of the username if the name is empty
+- display and save custom fields in the `Manage your account`
 
 
 ---
