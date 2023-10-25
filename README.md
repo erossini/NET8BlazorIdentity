@@ -18,6 +18,9 @@ This solution is a boilerplate for the implementation of common functionalities 
 - display the first name of the user of the username if the name is empty
 - display and save custom fields in the `Manage your account`
 
+## Screenshot
+
+![image](https://github.com/erossini/NET8BlazorIdentity/assets/9497415/1cb8cb4c-31f0-446b-8fa1-0aea0d17616a)
 
 ---
     
