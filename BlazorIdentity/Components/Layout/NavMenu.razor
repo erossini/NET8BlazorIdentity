@@ -44,7 +44,8 @@
                     <NavLink class="nav-link" href="/Account/Manage">
                         @if (ProfilePicture != null)
                         {
-                            <img style="width:30px; height:30px; margin-right: 5px; object-fit:cover; border-radius:30px" src="data:image/*;base64,@Convert.ToBase64String(ProfilePicture)">
+                            <img style="width:30px; height:30px; margin-right: 5px; object-fit:cover; border-radius:30px" 
+                                 src="data:image/*;base64,@Convert.ToBase64String(ProfilePicture)">
                         }
                         else
                         {
