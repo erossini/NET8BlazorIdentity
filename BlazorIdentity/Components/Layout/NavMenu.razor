@@ -2,6 +2,7 @@
 @using BlazorIdentity.Data
 @using Microsoft.AspNetCore.Identity
 @inject UserManager<ApplicationUser> usermanager
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
@@ -42,7 +43,7 @@
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="/Account/Manage">
                         <span class="bi bi-person-fill" aria-hidden="true"></span> 
-                        @(usermanager.GetUserAsync(context.User).Result.FirstName ?? context.User.Identity?.Name)
+                        @Username
                     </NavLink>
                 </div>
                 <div class="nav-item px-3">
@@ -67,3 +68,19 @@
         </AuthorizeView>
     </nav>
 </div>
+
+@code {
+    private string? Username;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            var fulldetails = await usermanager.GetUserAsync(user);
+            Username = fulldetails.FirstName ?? user.Identity.Name;
+        }
+    }
+}
