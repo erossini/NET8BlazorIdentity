@@ -1,16 +1,16 @@
 ﻿@using BlazorIdentity.Data
 @using Microsoft.AspNetCore.Identity
+
 @rendermode RenderMode.InteractiveServer
-@inject AuthenticationStateProvider AuthenticationStateProvider
-@inject UserManager<ApplicationUser> UserManager
-@inject UserAccessor UserAccessor;
+
+@inject IServiceProvider ServiceProvider
 
 <div class="form-floating">
     <label asp-for="User.ProfilePicture" style="width: 100%;"></label>
-    @if (_user != null && _user.ProfilePicture != null && _user.ProfilePicture.Length > 0)
+    @if (User?.ProfilePicture?.Length > 0)
     {
         <img id="profilePicture" style="width:350px;height:350px; object-fit:cover" 
-                src="data:image/*;base64,@(Convert.ToBase64String(_user.ProfilePicture))">
+                src="data:image/*;base64,@(Convert.ToBase64String(User.ProfilePicture))">
     }
     else
     {
@@ -20,12 +20,11 @@
 </div>
 
 @code {
-    private ApplicationUser _user = default!;
+    [Parameter]
+    public ApplicationUser User { get; set; } = default!;
 
-    protected override async Task OnInitializedAsync()
-    {
-        _user = await UserAccessor.GetRequiredUserAsync();
-    }
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationState { get; set; } = default!;
 
     private async Task LoadFiles(InputFileChangeEventArgs e)
     {
@@ -33,7 +32,15 @@
         await e.File.OpenReadStream().CopyToAsync(ms);
         var bytes = ms.ToArray();
 
-        _user.ProfilePicture = bytes;
-        await UserManager.UpdateAsync(_user);
+        await using var scope = ServiceProvider.CreateAsyncScope();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+        // Reload the ApplicationUser so we can make modifications to it in the new scope.
+        var principal = (await AuthenticationState).User;
+        User = await userManager.GetUserAsync(principal) ?? throw new Exception("Could not reload user!");
+
+        User.ProfilePicture = bytes;
+
+        await userManager.UpdateAsync(User);
     }
 }

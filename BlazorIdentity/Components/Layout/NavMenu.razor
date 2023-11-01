@@ -1,8 +1,7 @@
-﻿@using BlazorIdentity.Components.Identity
-@using BlazorIdentity.Data
+﻿@using BlazorIdentity.Data
 @using Microsoft.AspNetCore.Identity
-@inject UserManager<ApplicationUser> usermanager
-@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@inject IServiceProvider ServiceProvider
 
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
@@ -81,13 +80,18 @@
     private string? Username;
     private byte[] ProfilePicture;
 
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationState { get; set; } = default!;
+
     protected override async Task OnInitializedAsync()
     {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
+        var user = (await AuthenticationState).User;
 
         if (user.Identity.IsAuthenticated)
         {
+            await using var scope = ServiceProvider.CreateAsyncScope();
+            var usermanager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
             var fulldetails = await usermanager.GetUserAsync(user);
             Username = fulldetails.FirstName ?? user.Identity.Name;
             ProfilePicture = fulldetails.ProfilePicture;
