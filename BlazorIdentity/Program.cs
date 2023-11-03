@@ -5,6 +5,7 @@ using BlazorIdentity.Identity;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,6 +35,12 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
 	.AddDefaultTokenProviders();
 
 builder.Services.AddSingleton<IEmailSender, NoOpEmailSender>();
+
+builder.Services.Configure<HubOptions>(hubOptions =>
+{
+    // Support larger message size so large profile images can be rendered.
+    hubOptions.MaximumReceiveMessageSize = 1024 * 1024; // 1 MB
+});
 
 var app = builder.Build();
 
